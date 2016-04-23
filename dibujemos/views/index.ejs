@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Dibujemos</title>
+		<link rel="stylesheet" href="stylesheets/style.css">
+	</head>
+	<body>
+
+		<!-- CREACIÓN DEL TABLERO -->
+		<div>
+			<div id="connections"></div>
+			<div id="cursors"><!-- Aqui pondremos los cursores de nuestros amigos --></div>
+
+			<canvas id="paper" width="800" height="679">Tu navegador debe soportar canvas</canvas>
+
+			<hgroup id="instructions">
+				<h1>¡Dibujemos!</h1>
+				<h2>Dibuja en cualquier lugar con tu cursor</h2>
+				<h3>Si quieres un canvas nuevo simplemente refresca la página</h3>
+			</hgroup>
+
+			<script src="/socket.io/socket.io.js"></script>
+			<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+			<script src="javascripts/script.js"></script>
+		</div>
+
+		<!-- CREACIÓN DEL CHAT -->
+		<div id="contenido">
+			<div id="titulo">¡ADIVINA LA PALABRA!</div>
+			<div id="mensajes" style="width:500px; height:625px; overflow: scroll;"/>
+			<div id="enviar">
+				<div>
+					<form id="send-message">
+						<input type="text" id="message" size="55px" autocomplete="off" />
+						<input type="submit">
+					</form>
+				</div>
+			</div>
+			<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+			<script src="/socket.io/socket.io.js"></script>
+			<script>
+				var usuario;
+				//Se pide el usuario en un cuadro emergente y serguirá mostrando ese cuadro hasta que ingrese algo
+				do{
+					usuario = prompt("Ingrese un nombre de usuario");	
+				}while((usuario == undefined)||(usuario == ""));
+				
+				jQuery(function($){
+					var socket = io.connect();//Se inicia la conexión del socket cliente para enviar mensajes al servidor
+					var $messageForm = $('#send-message');//Formulario del chat
+					var $messageBox = $('#message');//Input del chat
+					var $chat = $('#mensajes');//Div donde se ponen todos los mensajes
+					$messageForm.submit(function(e){
+						e.preventDefault();
+						socket.emit('send message', usuario+": "+$messageBox.val());//Se envía el mensaje mediante el socket
+						$messageBox.val('');//Se borra lo que haya en el input del chat
+					}); 
+					socket.on('new message', function(data){
+						$chat.append("* "+data.msg+"<br/>");
+						autoScroll();//Autoposicionar el scroll del chat hasta la parte de abajo cuando hayan nuevos mensajes
+					});
+				})
+
+				//Para posicionar el scroll en el fondo de los mensajes cuando hayan nuevos mensajes
+				function autoScroll() {
+					var elem = document.getElementById('mensajes');
+					elem.scrollTop = elem.scrollHeight;
+				}
+			</script>
+		</div>
+	</body>
+</html>

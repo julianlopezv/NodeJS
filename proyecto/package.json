@@ -1,0 +1,20 @@
+{
+  "name": "TrabajandoNodeJS",
+  "version": "0.0.1",
+  "description": "Ejemplo de NodeJS en el Dojo 6",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "AppEmpresariales",
+    "UdeA",
+    "NodeJS",
+    "Dojo6"
+  ],
+  "author": "Julián López",
+  "license": "BSD",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
